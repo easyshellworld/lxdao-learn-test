@@ -7,6 +7,11 @@ import { verifyMessage } from "viem";
 const handler = NextAuth({
   providers: [
     CredentialsProvider({
+      name: "Ethereum Wallet",
+      credentials: {
+        address: { label: "Wallet Address", type: "text", placeholder: "0x..." },
+        signature: { label: "Signature", type: "text" },
+      },
       async authorize(credentials) {
         try {
           if (!credentials?.address || !credentials?.signature) {
@@ -14,15 +19,26 @@ const handler = NextAuth({
           }
 
           const registertext = await AuthFile("data/register.json");
-          const registerData=JSON.parse(registertext)
-          const user = registerData[credentials.address as string];
+          if (!registertext) {
+            console.error("Failed to load register.json");
+            return null;
+          }
 
+          let registerData;
+          try {
+            registerData = JSON.parse(registertext);
+          } catch (error) {
+            console.error("Invalid JSON format in register.json:", error);
+            return null;
+          }
+
+          const user = registerData[credentials.address];
           if (!user) {
             return null;
           }
 
           const message = "login LxDao";
-          const isValidSignature = await verifyMessage({
+          const isValidSignature = verifyMessage({
             address: credentials.address as `0x${string}`,
             message,
             signature: credentials.signature as `0x${string}`,
@@ -32,17 +48,15 @@ const handler = NextAuth({
             return null;
           }
 
-          // 只有已批准的用户才能登录
           if (user.approvalStatus === "approved") {
-            return { 
+            return {
               id: credentials.address,
               address: credentials.address,
-              status: "approved"
+              status: "approved",
             };
-          } else {
-            // 其他状态的用户不允许登录，但前端会根据预检查API的响应进行适当处理
-            return null;
           }
+
+          return null;
         } catch (error) {
           console.error("Authentication error:", error);
           return null;
@@ -60,8 +74,8 @@ const handler = NextAuth({
     },
     session: async ({ session, token }) => {
       if (token && session.user) {
-        session.user.address = token.address as string;
-        session.user.status = token.status as string;
+        session.user.address = token.address;
+        session.user.status = token.status;
       }
       return session;
     },
