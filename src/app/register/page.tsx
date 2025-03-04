@@ -48,7 +48,7 @@ export default function Register() {
         const errorData = await response.json();
         setError(errorData.message || 'Registration failed');
       }
-    } catch (err) {
+    } catch  {
       setError('An unexpected error occurred');
     } finally {
       setLoading(false); // 结束加载

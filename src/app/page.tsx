@@ -11,7 +11,7 @@ export default function Home() {
   const { signMessageAsync } = useSignMessage();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-  const { data: session,status } = useSession(); // 获取session信息
+  const {/*  data: session, */status } = useSession(); // 获取session信息
 
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 import { http, createConfig} from 'wagmi'
 import { /* base, mainnet, */ optimism } from 'wagmi/chains'
-import { metaMask, walletConnect } from 'wagmi/connectors'
+import { metaMask/* , walletConnect  */} from 'wagmi/connectors'
 
 //const projectId = '<WALLETCONNECT_PROJECT_ID>'
 
