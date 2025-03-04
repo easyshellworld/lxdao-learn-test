@@ -66,16 +66,17 @@ const handler = NextAuth({
   ],
   callbacks: {
     jwt: async ({ token, user }) => {
-      if (user) {
-        token.address = user.address;
-        token.status = user.status;
+      if (user && "address" in user && "status" in user) {
+        token.address = user.address as string;
+        token.status = user.status as string;
       }
       return token;
     },
     session: async ({ session, token }) => {
-      if (token && session.user) {
-        session.user.address = token.address;
-        session.user.status = token.status;
+      if (session.user) {
+        const user = session.user as unknown as { address: string; status: string };
+        user.address = token.address as string;
+        user.status = token.status as string;
       }
       return session;
     },
