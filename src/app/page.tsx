@@ -1,5 +1,5 @@
 "use client";
-
+import Image from 'next/image';
 import { useEffect, useState } from "react";
 import { useAccount, useSignMessage } from "wagmi";
 import { useRouter } from "next/navigation";
@@ -73,8 +73,24 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
+      {/* Logo */}
+      <div className="mb-4">
+        <Image
+          src="/logo.webp" // 图片路径（放在 public 目录下）
+          alt="LXDao Logo"  // 替代文本
+          width={96}        // 图片宽度
+          height={96}       // 图片高度
+          priority          // 预加载，提升 LCP 性能
+        />
+      </div>
+
+      {/* 标题 */}
       <h1 className="text-3xl font-bold mb-4">LXDao 残酷共学web3 DEMO测试系统</h1>
+
+      {/* 提示文字 */}
       <p className="mb-6 text-gray-600">请连接钱包以继续</p>
+
+      {/* 连接钱包按钮 */}
       <ConnectWallet />
     </div>
   );

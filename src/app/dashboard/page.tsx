@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAccount } from 'wagmi';
 import { useRouter } from 'next/navigation';
 import { MarkdownEditor } from '@/components/MarkdownEditor';
@@ -9,13 +9,21 @@ import { useSession } from 'next-auth/react';
 
 export default function Edit() {
   const { address, isConnected } = useAccount();
-  const [markdown, setMarkdown] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [markdown, setMarkdown] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [saveSuccess, setSaveSuccess] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState<boolean>(false);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
   const { status: sessionStatus } = useSession();
   const router = useRouter();
+  const isMounted = useRef<boolean>(true);
+
+  // 组件卸载时标记 isMounted 为 false
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   // 如果未连接钱包或未认证，跳转到首页
   useEffect(() => {
@@ -26,9 +34,9 @@ export default function Edit() {
 
   // 获取数据
   useEffect(() => {
-    const fetchData = async () => {
-      if (!address || sessionStatus !== 'authenticated') return;
+    if (!address || sessionStatus !== 'authenticated') return;
 
+    const fetchData = async () => {
       setLoading(true);
       setError(null);
 
@@ -37,14 +45,20 @@ export default function Edit() {
 
         if (response.ok) {
           const data = await response.json();
-          setMarkdown(data.content);
+          if (isMounted.current) {
+            setMarkdown(data.content);
+          }
         } else {
           throw new Error('Failed to fetch data');
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+        if (isMounted.current) {
+          setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+        }
       } finally {
-        setLoading(false);
+        if (isMounted.current) {
+          setLoading(false);
+        }
       }
     };
 
@@ -53,7 +67,7 @@ export default function Edit() {
 
   // 保存数据
   const handleSave = async () => {
-    if (!address || isSaving) return;
+    if (!address || isSaving || !isMounted.current) return;
 
     setIsSaving(true);
     setError(null);
@@ -65,16 +79,22 @@ export default function Edit() {
         body: JSON.stringify({ content: markdown }),
       });
 
-      if (response.ok) {
+      if (response.ok && isMounted.current) {
         setSaveSuccess(true);
-        setTimeout(() => setSaveSuccess(false), 3000); // 3秒后隐藏成功提示
+        setTimeout(() => {
+          if (isMounted.current) setSaveSuccess(false);
+        }, 3000); // 3秒后隐藏成功提示
       } else {
         throw new Error('Failed to save data');
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+      if (isMounted.current) {
+        setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+      }
     } finally {
-      setIsSaving(false);
+      if (isMounted.current) {
+        setIsSaving(false);
+      }
     }
   };
 
@@ -112,9 +132,12 @@ export default function Edit() {
         <MarkdownViewer markdown={markdown} />
       </div>
 
+      {/* 保存成功提示（居中显示） */}
       {saveSuccess && (
-        <div className="fixed top-4 right-4 bg-green-500 text-white p-4 rounded shadow-md">
-          保存成功!
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-green-500 text-white p-6 rounded-lg shadow-lg">
+            保存成功!
+          </div>
         </div>
       )}
     </div>
