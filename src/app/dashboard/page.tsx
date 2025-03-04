@@ -40,7 +40,7 @@ export default function Edit() {
     };
 
     fetchData();
-  }, []);
+  }, [address]);
 
   const handleSave = async () => {
     if (!address || isSaving) return;
