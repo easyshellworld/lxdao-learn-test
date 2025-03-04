@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAccount } from 'wagmi';
+import { useRouter } from 'next/navigation';
 import { MarkdownEditor } from '@/components/MarkdownEditor';
 import { MarkdownViewer } from '@/components/MarkdownViewer';
 import { useSession } from 'next-auth/react';
@@ -13,12 +14,20 @@ export default function Edit() {
   const [error, setError] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const session = useSession();
-  
+  const { status: sessionStatus } = useSession();
+  const router = useRouter();
 
+  // 如果未连接钱包或未认证，跳转到首页
+  useEffect(() => {
+    if (!isConnected || sessionStatus !== 'authenticated') {
+      router.push('/');
+    }
+  }, [isConnected, sessionStatus, router]);
+
+  // 获取数据
   useEffect(() => {
     const fetchData = async () => {
-      if (!address && session.status!='authenticated') return;
+      if (!address || sessionStatus !== 'authenticated') return;
 
       setLoading(true);
       setError(null);
@@ -40,8 +49,9 @@ export default function Edit() {
     };
 
     fetchData();
-  }, [address]);
+  }, [address, sessionStatus]);
 
+  // 保存数据
   const handleSave = async () => {
     if (!address || isSaving) return;
 
@@ -57,6 +67,7 @@ export default function Edit() {
 
       if (response.ok) {
         setSaveSuccess(true);
+        setTimeout(() => setSaveSuccess(false), 3000); // 3秒后隐藏成功提示
       } else {
         throw new Error('Failed to save data');
       }
@@ -67,15 +78,33 @@ export default function Edit() {
     }
   };
 
-  if (!isConnected) return <p>请连接钱包</p>;
-  if (loading) return <p>加载中...</p>;
-  if (error) return <p className="text-red-500">{error}</p>;
+  // 加载状态
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-4xl font-bold">LOADING...</p>
+      </div>
+    );
+  }
+
+  // 错误状态
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-red-500 text-2xl">{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen">
       <div className="w-1/2 p-4">
         <MarkdownEditor value={markdown} onChange={setMarkdown} />
-        <button onClick={handleSave} disabled={isSaving} className="bg-blue-500 text-white p-2 rounded mt-4">
+        <button
+          onClick={handleSave}
+          disabled={isSaving}
+          className="bg-blue-500 text-white p-2 rounded mt-4"
+        >
           {isSaving ? '保存中...' : '保存'}
         </button>
       </div>

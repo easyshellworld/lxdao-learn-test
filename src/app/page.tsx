@@ -11,8 +11,7 @@ export default function Home() {
   const { signMessageAsync } = useSignMessage();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-  const {/*  data: session, */status } = useSession(); // 获取session信息
-
+  const { status } = useSession();
 
   useEffect(() => {
     async function checkAuth() {
@@ -31,20 +30,16 @@ export default function Home() {
 
           const data = await response.json();
 
-          if (data.token ) {
+          if (data.token) {
             // 使用nextAuth的signIn
-            signIn("credentials", {
+            await signIn("credentials", {
               address,
               signature,
               redirect: false,
             });
-            if (status === 'authenticated') {
-              router.push('/dashboard');
-            }
           } else if (data.status === "pending") {
             router.push("/register/pending");
-          } 
-           else if (data.status === "not_found") {
+          } else if (data.status === "not_found") {
             router.push("/register");
           } else {
             console.error("Unknown status:", data.status);
@@ -60,9 +55,21 @@ export default function Home() {
     }
 
     checkAuth();
-  }, [isConnected, address, router, signMessageAsync,status]);
+  }, [isConnected, address, router, signMessageAsync]);
 
-  if (loading) return <p className="text-center mt-6">加载中...</p>;
+  useEffect(() => {
+    if (status === 'authenticated') {
+      router.push('/dashboard');
+    }
+  }, [status, router]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-4xl font-bold">LOADING...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
