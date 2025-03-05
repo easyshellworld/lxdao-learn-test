@@ -29,10 +29,10 @@ export default function Edit() {
 
   // 如果未连接钱包或未认证，跳转到首页
   useEffect(() => {
-   if (!isConnected || sessionStatus !== 'authenticated'){
+   if ((!isConnected || sessionStatus !== 'authenticated') && !loading){
       router.push('/');
     }
-  }, [isConnected, sessionStatus, router]);
+  }, [isConnected, sessionStatus, router,loading]);
 
   // 获取数据
   useEffect(() => {
