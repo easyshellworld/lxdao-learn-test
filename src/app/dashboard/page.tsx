@@ -7,6 +7,7 @@ import { MarkdownEditor } from '@/components/MarkdownEditor';
 import { MarkdownViewer } from '@/components/MarkdownViewer';
 import { useSession } from 'next-auth/react';
 
+
 export default function Edit() {
   const { address, isConnected } = useAccount();
   const [markdown, setMarkdown] = useState<string>('');
@@ -19,22 +20,23 @@ export default function Edit() {
   const isMounted = useRef<boolean>(true);
 
   // 组件卸载时标记 isMounted 为 false
-  useEffect(() => {
+/*   useEffect(() => {
     return () => {
       isMounted.current = false;
+     
     };
-  }, []);
+  }, []); */
 
   // 如果未连接钱包或未认证，跳转到首页
   useEffect(() => {
-    if (!isConnected || sessionStatus !== 'authenticated') {
+   if (!isConnected || sessionStatus !== 'authenticated'){
       router.push('/');
     }
   }, [isConnected, sessionStatus, router]);
 
   // 获取数据
   useEffect(() => {
-    if (!address || sessionStatus !== 'authenticated') return;
+    if (!address || sessionStatus !== 'authenticated' ) return;
 
     const fetchData = async () => {
       setLoading(true);
@@ -45,7 +47,7 @@ export default function Edit() {
 
         if (response.ok) {
           const data = await response.json();
-          if (isMounted.current) {
+        if (isMounted.current) {
             setMarkdown(data.content);
           }
         } else {
@@ -56,9 +58,10 @@ export default function Edit() {
           setError(err instanceof Error ? err.message : 'An unexpected error occurred');
         }
       } finally {
-        if (isMounted.current) {
+        console.log(isMounted.current)
+       if (isMounted.current) {
           setLoading(false);
-        }
+       }
       }
     };
 
@@ -134,7 +137,7 @@ export default function Edit() {
 
       {/* 保存成功提示（居中显示） */}
       {saveSuccess && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-opacity-50 z-50">
           <div className="bg-green-500 text-white p-6 rounded-lg shadow-lg">
             保存成功!
           </div>

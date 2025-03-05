@@ -1,3 +1,4 @@
+'use client';
 import { useState, ChangeEvent } from 'react';
 import MDEditor, { ContextStore } from '@uiw/react-md-editor';
 

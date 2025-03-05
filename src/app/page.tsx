@@ -58,10 +58,10 @@ export default function Home() {
   }, [isConnected, address, router, signMessageAsync]);
 
   useEffect(() => {
-    if (status === 'authenticated') {
+    if (status === 'authenticated' && isConnected && address ) {
       router.push('/dashboard');
     }
-  }, [status, router]);
+  }, [status, router,isConnected,address]);
 
   if (loading) {
     return (
