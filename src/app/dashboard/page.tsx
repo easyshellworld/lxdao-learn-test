@@ -11,12 +11,10 @@ import EditorWithSave from '@/components/EditorWithSave';
 
 
 export default function Edit() {
-  const { address, isConnected } = useAccount();
+  const { address, isConnected,isConnecting } = useAccount();
   const [markdown, setMarkdown] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-/*   const [saveSuccess, setSaveSuccess] = useState<boolean>(false);
-  const [isSaving, setIsSaving] = useState<boolean>(false); */
   const { status: sessionStatus } = useSession();
   const router = useRouter();
   const isMounted = useRef<boolean>(true);
@@ -31,14 +29,14 @@ export default function Edit() {
 
   // 如果未连接钱包或未认证，跳转到首页
   useEffect(() => {
-   if ((!isConnected || sessionStatus !== 'authenticated') && !loading){
+   if (((!isConnected && isConnecting) || sessionStatus === 'unauthenticated') && !loading){
       router.push('/');
     }
-  }, [isConnected, sessionStatus, router,loading]);
+  }, [isConnected, sessionStatus, router,loading,isConnecting]);
 
   // 获取数据
   useEffect(() => {
-    if (!address || sessionStatus !== 'authenticated' ) return;
+    if (!address || sessionStatus !== 'authenticated' || isConnecting ) return;
 
     const fetchData = async () => {
       setLoading(true);
@@ -68,7 +66,7 @@ export default function Edit() {
     };
 
     fetchData();
-  }, [address, sessionStatus]);
+  }, [address, sessionStatus,isConnecting]);
 
 
 
