@@ -1,27 +1,17 @@
 'use client';
-import { useState, ChangeEvent } from 'react';
-import MDEditor, { ContextStore } from '@uiw/react-md-editor';
+/* import { useEffect, useRef } from 'react'; */
+import MDEditor from '@uiw/react-md-editor';
 
 export const MarkdownEditor = ({ value, onChange }: { value: string; onChange: (value: string) => void }) => {
-  const [preview] = useState<'edit' | 'preview'>('edit');
-
-  const handleChange = (newValue: string | undefined, event?: ChangeEvent<HTMLTextAreaElement> | undefined, state?: ContextStore | undefined) => {
-    if (newValue !== undefined) {
-      console.log('Event:', event);
-      console.log('State:', state);
-      onChange(newValue);
-    }
-  };
-
   return (
-    <MDEditor
-      value={value}
-      onChange={handleChange}
-      preview={preview}
-      previewOptions={{
-        rehypePlugins: [],
-      }}
-      height={500}
-    />
+    <div className="w-full h-full flex flex-col">
+      <MDEditor
+        value={value}
+        onChange={(newValue) => newValue !== undefined && onChange(newValue)}
+        preview="edit"
+        previewOptions={{ rehypePlugins: [] }}
+        style={{ flex: 1, width: '100%', overflow: 'hidden' }}
+      />
+    </div>
   );
 };

@@ -21,12 +21,6 @@ const EditorWithSave: React.FC<EditorWithSaveProps> = ({
     setMarkdown(initialMarkdown || '');
   }, [initialMarkdown]);
 
-/*   useEffect(() => {
-    return () => {
-      isMounted.current = false;
-    };
-  }, []); */
-
   const handleSave = async () => {
     if (!address || isSaving || !isMounted.current) return;
 
@@ -60,22 +54,34 @@ const EditorWithSave: React.FC<EditorWithSaveProps> = ({
   };
 
   return (
-    <div className="flex h-screen">
-      <div className="w-1/2 p-4">
-        <MarkdownEditor value={markdown} onChange={setMarkdown} />
+    <div className="flex flex-col h-screen">
+      {/* 主体部分（编辑器 & 预览器） */}
+      <div className="flex w-full flex-grow">
+        {/* 编辑区 */}
+        <div className="w-1/2 p-4 flex flex-col min-h-0">
+          <div className="flex-1 min-h-0 flex flex-col">
+            <MarkdownEditor value={markdown} onChange={setMarkdown} />
+          </div>
+        </div>
+
+        {/* 预览区 */}
+        <div className="w-1/2 p-4 border-l flex flex-col min-h-0">
+          <div className="flex-1 min-h-0 flex flex-col">
+            <MarkdownViewer markdown={markdown} />
+          </div>
+        </div>
+      </div>
+
+      {/* 保存按钮区域 */}
+      <div className="flex justify-center p-4">
         <button
           onClick={handleSave}
           disabled={isSaving}
-          className="bg-blue-500 text-white p-2 rounded mt-4"
+          className="bg-blue-500 text-white p-2 rounded"
         >
           {isSaving ? '保存中...' : '保存'}
         </button>
-        {error && ( // Display the error message
-          <div className="text-red-500 mt-2">{error}</div>
-        )}
-      </div>
-      <div className="w-1/2 p-4 border-l">
-        <MarkdownViewer markdown={markdown} />
+        {error && <div className="text-red-500 ml-4">{error}</div>}
       </div>
 
       {saveSuccess && (
