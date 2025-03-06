@@ -29,7 +29,7 @@ export default function Edit() {
 
   // 如果未连接钱包或未认证，跳转到首页
   useEffect(() => {
-   if (((!isConnected && isConnecting) || sessionStatus === 'unauthenticated') && !loading){
+   if ((!isConnected  || sessionStatus === 'unauthenticated') && !loading && !isConnecting){
       router.push('/');
     }
   }, [isConnected, sessionStatus, router,loading,isConnecting]);

@@ -19,10 +19,10 @@ interface MarkdownViewerProps {
 
 export const MarkdownViewer: React.FC<MarkdownViewerProps> = ({ markdown }) => {
   return (
-    <div className="w-full h-full flex flex-col">
-      <ScrollArea className="border border-gray-200 rounded-lg overflow-auto flex-1">
-        <div className="markdown-body p-4 pr-6">
-        <ReactMarkdown
+    <div className="w-full h-full">
+      <ScrollArea className="h-full w-full border border-gray-200 rounded-lg">
+        <div className="markdown-body p-4">
+          <ReactMarkdown
             remarkPlugins={[
               [remarkGfm, { singleTightList: false }],
               remarkBreaks,
