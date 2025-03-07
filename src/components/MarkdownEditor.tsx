@@ -1,5 +1,8 @@
 'use client';
 import MDEditor from '@uiw/react-md-editor';
+import { MarkdownViewer } from '@/components/MarkdownViewer';
+
+
 
 export const MarkdownEditor = ({ value, onChange }: { value: string; onChange: (value: string) => void }) => {
   return (
@@ -7,8 +10,17 @@ export const MarkdownEditor = ({ value, onChange }: { value: string; onChange: (
       <MDEditor
         value={value}
         onChange={(newValue) => newValue !== undefined && onChange(newValue)}
-        preview="edit"
-        previewOptions={{ rehypePlugins: [] }}
+        components={{
+          preview: (source) => {
+            return <MarkdownViewer markdown={source} />;
+          }
+        }}
+        preview="live"
+        previewOptions={{
+          rehypePlugins: [],
+          
+          
+        }}
         height="100%"
         style={{
           height: '100%',

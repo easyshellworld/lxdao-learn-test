@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MarkdownEditor } from '@/components/MarkdownEditor';
-import { MarkdownViewer } from '@/components/MarkdownViewer';
+//import { MarkdownViewer } from '@/components/MarkdownViewer';
 
 interface EditorWithSaveProps {
   initialMarkdown?: string;
@@ -63,20 +63,21 @@ const EditorWithSave: React.FC<EditorWithSaveProps> = ({
   return (
     <div className="flex flex-col h-full">
       {/* 主体部分（编辑器 & 预览器） */}
-      <div className="flex flex-1 min-h-0">
+      <div className="flex  min-h-0">
         {/* 编辑区 */}
-        <div className="w-1/2 p-4 flex flex-col min-h-0">
-          <div className="flex-1 min-h-0">
+        <div className="w-full p-4 flex flex-col min-h-0">
+          <div className=" min-h-100">
             <MarkdownEditor value={markdown} onChange={setMarkdown} />
           </div>
         </div>
-
-        {/* 预览区 */}
+{/* 
+        {/* 预览区 
         <div className="w-1/2 p-4 border-l flex flex-col min-h-0">
           <div className="flex-1 min-h-0">
             <MarkdownViewer markdown={markdown} />
           </div>
-        </div>
+        </div> */}
+
       </div>
 
       {/* 保存按钮区域 */}
