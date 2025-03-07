@@ -44,7 +44,10 @@ export const CheckInTable: React.FC<CheckInTableProps> = ({ markdown }) => {
   const extractedTable = extractCheckInTable(markdown);
   return (
     <div className="overflow-x-auto border border-gray-200 rounded-lg p-4">
-          <MarkdownViewer markdown={extractedTable} />
+      <div className="w-full flex justify-center">
+        <MarkdownViewer markdown={extractedTable} />
+      </div>
+
     </div>
   );
 };

@@ -50,32 +50,48 @@ export const CheckInList: React.FC<CheckInListProps> = ({ markdown }) => {
 
   return selectedName ? (
     <div>
-       <button
-        onClick={() => setSelectedName(null)}
-        className="mb-4 rounded-lg bg-blue-500 px-4 py-2 text-white shadow-md hover:bg-blue-600 transition"
-      >
-        返回
-      </button>
+      <div className="flex justify-end">
+        <button
+          onClick={() => setSelectedName(null)}
+          className="mb-4 rounded-lg bg-blue-500 px-4 py-2 text-white shadow-md hover:bg-blue-600 transition"
+        >
+          返回
+        </button>
+      </div>
       {loading ? (
-       <p className="text-xl font-semibold text-gray-700 text-center">学习笔记加载中...</p>
+        <p className="text-xl font-semibold text-gray-700 text-center">学习笔记加载中...</p>
       ) : error ? (
         <p className="text-xl font-semibold text-red-500 text-center">错误: {error}</p>
       ) : (
-        <MarkdownViewer markdown={notes} />
+        <div>
+          <MarkdownViewer markdown={notes} />
+          <div className="flex justify-end">
+            <button
+              onClick={() => setSelectedName(null)}
+              className="mb-4 rounded-lg bg-blue-500 px-4 py-2 text-white shadow-md hover:bg-blue-600 transition"
+            >
+              返回
+            </button>
+          </div>
+        </div>
       )}
+
     </div>
   ) : (
-    <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 p-4 w-full max-w-5xl">
-    {firstColumn.map(([name], index) => (
-      <li key={index}>
-        <button
-          onClick={() => handleClick(name)}
-          className="w-full rounded-lg bg-gray-200 px-4 py-2 text-gray-700 shadow-md hover:bg-gray-300 transition"
-        >
-          {name}
-        </button>
-      </li>
-    ))}
-  </ul>
+    <div className="flex justify-center">
+      <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 p-4 w-full max-w-5xl">
+        {firstColumn.map(([name], index) => (
+          <li key={index}>
+            <button
+              onClick={() => handleClick(name)}
+              className="w-full rounded-lg bg-gray-200 px-4 py-2 text-gray-700 shadow-md hover:bg-gray-300 transition"
+            >
+              {name}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+
   );
 };

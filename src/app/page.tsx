@@ -9,6 +9,8 @@ import { useSession, signIn } from "next-auth/react";
 // Define authentication states
 type AuthState = 'initial' | 'connecting' | 'signing' | 'authenticating' | 'registered' | 'pending' | 'error';
 
+const getTitle =()=> process.env.NEXT_PUBLIC_ITEM_TITLE  || "LXdao 学习系统";
+
 export default function Home() {
   const { address, isConnected } = useAccount();
   const { signMessageAsync } = useSignMessage();
@@ -18,6 +20,10 @@ export default function Home() {
   // More granular authentication state
   const [authState, setAuthState] = useState<AuthState>('initial');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [title, setTitle] = useState("");
+  useEffect(() => {
+    setTitle(getTitle());
+  }, []);
 
   useEffect(() => {
     async function checkAuth() {
@@ -99,7 +105,7 @@ export default function Home() {
                 priority
               />
             </div>
-            <h1 className="text-3xl font-bold mb-4">LXDao 残酷共学web3 DEMO测试系统</h1>
+            <h1 className="text-3xl font-bold mb-4">{title}</h1>
             <p className="mb-6 text-gray-600">请连接钱包以继续</p>
             <ConnectWallet />
           </div>

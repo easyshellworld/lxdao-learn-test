@@ -21,7 +21,7 @@ export const MarkdownViewer: React.FC<MarkdownViewerProps> = ({ markdown }) => {
   return (
     <div className="w-full h-full">
       <ScrollArea className="h-full w-full border border-gray-200 rounded-lg">
-        <div className="markdown-body p-4">
+        <div className="markdown-body p-4 ">
           <ReactMarkdown
             remarkPlugins={[ remarkGfm,remarkBreaks, remarkMath]} // 保证 GFM 插件启用 remarkBreaks, remarkMath remarkGfm
             rehypePlugins={[rehypeKatex, rehypeRaw, rehypeHighlight]} //rehypeKatex, rehypeRaw, rehypeHighlight
@@ -37,7 +37,7 @@ export const MarkdownViewer: React.FC<MarkdownViewerProps> = ({ markdown }) => {
                 </ul>
               ),
               table: ({ children }) => (
-                <table className="w-full border-collapse border border-gray-300">
+                <table className="w-full flex justify-center border-collapse border border-gray-300">
                   {children}
                 </table>
               ),

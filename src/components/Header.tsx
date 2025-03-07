@@ -6,12 +6,21 @@ import { useAccount, useDisconnect } from 'wagmi';
 import { signOut } from 'next-auth/react';
 import { useRouter } from "next/navigation";
 import { useLearning } from "@/components/LearningContext";
+import { useEffect, useState } from "react";
+
+const getTitle =()=> process.env.NEXT_PUBLIC_ITEM_TITLE  || "LXdao 学习系统";
 
 export function Header() {
   const { isConnected } = useAccount();
   const { disconnect } = useDisconnect();
   const router = useRouter();
   const {  setActiveView } = useLearning();
+
+  const [title, setTitle] = useState("");
+
+  useEffect(() => {
+    setTitle(getTitle());
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -33,7 +42,7 @@ export function Header() {
       <div className="container flex flex-col items-center">
         <div className="flex items-center justify-center mb-2">
           <Image src="/logo.webp" alt="LxDao Logo" width={40} height={40} />
-          <h1 className="text-2xl font-bold ml-2">LxDao残酷共学demo系统</h1>
+          <h1 className="text-2xl font-bold ml-2">{title}</h1>
         </div>
         <nav className="flex items-center space-x-4">
           <button
