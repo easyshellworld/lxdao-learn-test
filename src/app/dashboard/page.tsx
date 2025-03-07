@@ -7,17 +7,24 @@ import { useRouter } from 'next/navigation';
 import { MarkdownViewer } from '@/components/MarkdownViewer'; */
 import { useSession } from 'next-auth/react';
 import EditorWithSave from '@/components/EditorWithSave'; 
+import { StudyMaterials, CheckInTable } from '@/components/ReadmeViewer';
+import { CheckInList } from '@/components/notesView';
+import { useLearning } from "@/components/LearningContext";
 
 
 
 export default function Edit() {
   const { address, isConnected,isConnecting } = useAccount();
   const [markdown, setMarkdown] = useState<string>('');
+  const [readme, setReadme] = useState<string>('');
+ 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const { status: sessionStatus } = useSession();
   const router = useRouter();
   const isMounted = useRef<boolean>(true);
+  const { activeView } = useLearning();
+
 
   // 组件卸载时标记 isMounted 为 false
 /*   useEffect(() => {
@@ -49,6 +56,7 @@ export default function Edit() {
           const data = await response.json();
         if (isMounted.current) {
             setMarkdown(data.content);
+            setReadme(data.readme);
           }
         } else {
           throw new Error('Failed to fetch data');
@@ -90,7 +98,14 @@ export default function Edit() {
 
   return (
     <div>
-      <EditorWithSave initialMarkdown={markdown} address={address} />
+  {/*     <EditorWithSave initialMarkdown={markdown} address={address} />
+     <StudyMaterials markdown={readme} />
+     <CheckInTable markdown={readme} />
+     <CheckInList markdown={readme} /> */}
+      {activeView === "editor" && <EditorWithSave initialMarkdown={markdown} address={address} />}
+      {activeView === "materials" && <StudyMaterials markdown={readme} />}
+      {activeView === "table" && <CheckInTable markdown={readme} />}
+      {activeView === "list" && <CheckInList markdown={readme} />}
      
     </div>
   );

@@ -1,6 +1,7 @@
 'use client';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { LearningProvider } from "@/components/LearningContext";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -8,6 +9,7 @@ interface LayoutProps {
 
 function Layout({ children }: LayoutProps) {
   return (
+    <LearningProvider>
     <div className="flex flex-col h-screen">
       <Header  />
       <main className="flex-grow overflow-auto">
@@ -15,6 +17,7 @@ function Layout({ children }: LayoutProps) {
       </main>
       <Footer />
     </div>
+    </LearningProvider>
   );
 }
 

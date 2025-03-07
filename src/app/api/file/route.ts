@@ -12,6 +12,18 @@ export async function GET(request: NextRequest) {
     }
 
     const address = request.nextUrl.searchParams.get('address');
+    const name = request.nextUrl.searchParams.get('name');
+
+    if (name) {
+      const notesPath = `${name}.md`;
+      const notesContent = await readFile(notesPath);
+
+      if (!notesContent) {
+        return NextResponse.json({ message: 'Notes file not found' }, { status: 404 });
+      }
+
+      return NextResponse.json({ notes: notesContent });
+    }
     if (!address) {
       return NextResponse.json({ message: 'Address is required' }, { status: 400 });
     }
@@ -30,11 +42,12 @@ export async function GET(request: NextRequest) {
 
     const filePath = user.file;
     const fileContent = await readFile(filePath);
-    if (!fileContent) {
+    const readmefile = await readFile("README.md");
+    if (!fileContent || !readmefile) {
       return NextResponse.json({ message: 'File content not found' }, { status: 404 });
     }
 
-    return NextResponse.json({ content: fileContent });
+    return NextResponse.json({ content: fileContent,readme:readmefile });
   } catch (error) {
     console.error('Failed to fetch file:', error);
     return NextResponse.json({ message: 'Failed to fetch file' }, { status: 500 });
