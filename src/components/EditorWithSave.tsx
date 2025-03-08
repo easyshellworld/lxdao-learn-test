@@ -5,21 +5,28 @@ import { MarkdownEditor } from '@/components/MarkdownEditor';
 interface EditorWithSaveProps {
   initialMarkdown?: string;
   address?: string;
+  setMarkdown: (markdown: string) => void;
 }
 
 const EditorWithSave: React.FC<EditorWithSaveProps> = ({
   initialMarkdown,
   address,
+  setMarkdown
 }) => {
-  const [markdown, setMarkdown] = useState(initialMarkdown || '');
+  const [markdown, localSetMarkdown] = useState(initialMarkdown || '');
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const isMounted = useRef(true);
 
   useEffect(() => {
-    setMarkdown(initialMarkdown || '');
+    localSetMarkdown(initialMarkdown || '');
   }, [initialMarkdown]);
+
+  const handleMarkdownChange = (newMarkdown: string) => {
+    localSetMarkdown(newMarkdown); // 更新本地状态
+    setMarkdown(newMarkdown); // 同步到上层 useMarkdown
+  };
 
   // 组件卸载时更新 isMounted 标志
 /*   useEffect(() => {
@@ -67,7 +74,7 @@ const EditorWithSave: React.FC<EditorWithSaveProps> = ({
         {/* 编辑区 */}
         <div className="w-full p-4 flex flex-col min-h-0">
           <div className=" min-h-100">
-            <MarkdownEditor value={markdown} onChange={setMarkdown} />
+            <MarkdownEditor value={markdown} onChange={ handleMarkdownChange} />
           </div>
         </div>
 {/* 

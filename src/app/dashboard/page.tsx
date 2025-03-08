@@ -103,7 +103,7 @@ export default function Edit() {
      <StudyMaterials markdown={readme} />
      <CheckInTable markdown={readme} />
      <CheckInList markdown={readme} /> */}
-      {activeView === "editor" && <EditorWithSave initialMarkdown={markdown} address={address} />}
+      {activeView === "editor" && <EditorWithSave initialMarkdown={markdown}  setMarkdown={setMarkdown}  address={address} />}
       {activeView === "materials" && <StudyMaterials markdown={readme} />}
       {activeView === "table" && <CheckInTable markdown={readme} />}
       {activeView === "list" && <CheckInList markdown={readme} />}
