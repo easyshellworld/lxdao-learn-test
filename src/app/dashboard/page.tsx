@@ -9,13 +9,13 @@ import { useSession } from 'next-auth/react';
 import EditorWithSave from '@/components/EditorWithSave'; 
 import { StudyMaterials, CheckInTable } from '@/components/ReadmeViewer';
 import { CheckInList } from '@/components/notesView';
-import { useLearning } from "@/components/LearningContext";
+import { useLearning,useMarkdown } from "@/components/LearningContext";
 
 
 
 export default function Edit() {
   const { address, isConnected,isConnecting } = useAccount();
-  const [markdown, setMarkdown] = useState<string>('');
+  
   const [readme, setReadme] = useState<string>('');
  
   const [loading, setLoading] = useState<boolean>(true);
@@ -24,6 +24,7 @@ export default function Edit() {
   const router = useRouter();
   const isMounted = useRef<boolean>(true);
   const { activeView } = useLearning();
+  const{ markdown, setMarkdown} = useMarkdown();
 
 
   // 组件卸载时标记 isMounted 为 false
@@ -74,7 +75,7 @@ export default function Edit() {
     };
 
     fetchData();
-  }, [address, sessionStatus,isConnecting]);
+  }, [address, sessionStatus,isConnecting,setMarkdown]);
 
 
 

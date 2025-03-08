@@ -1,12 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { useAccount } from 'wagmi';
+import { useAccount, useDisconnect } from 'wagmi';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 
 export default function Register() {
   const { address, isConnected } = useAccount();
+  const { disconnect } = useDisconnect();
   const router = useRouter();
 
   const [formData, setFormData] = useState({
@@ -48,11 +49,16 @@ export default function Register() {
         const errorData = await response.json();
         setError(errorData.message || 'Registration failed');
       }
-    } catch  {
+    } catch {
       setError('An unexpected error occurred');
     } finally {
       setLoading(false); // 结束加载
     }
+  };
+
+  const handleLogout = () => {
+    disconnect(); // 断开钱包连接
+    router.push('/'); // 跳转到首页
   };
 
   if (!isConnected) return <p>请连接钱包</p>;
@@ -124,6 +130,10 @@ export default function Register() {
 
       <Button onClick={handleRegister} className="w-full" disabled={loading}>
         {loading ? '提交中...' : '提交报名'}
+      </Button>
+
+      <Button onClick={handleLogout} className="w-full mt-4 bg-red-500 hover:bg-red-600">
+        退出钱包并返回首页
       </Button>
     </div>
   );
